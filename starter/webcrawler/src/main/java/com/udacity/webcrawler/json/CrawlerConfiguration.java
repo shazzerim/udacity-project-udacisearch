@@ -1,5 +1,8 @@
 package com.udacity.webcrawler.json;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import java.time.Duration;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -11,6 +14,7 @@ import java.util.stream.Collectors;
 /**
  * A data class that represents the configuration of a single web crawl.
  */
+@JsonDeserialize(builder = CrawlerConfiguration.Builder.class)
 public final class CrawlerConfiguration {
 
   private final List<String> startPages;
@@ -51,6 +55,7 @@ public final class CrawlerConfiguration {
    * An unmodifiable {@link List} of URLs that define the starting points of the web crawl. It
    * should not contain any duplicate URLs.
    */
+
   public List<String> getStartPages() {
     return startPages;
   }
@@ -59,6 +64,7 @@ public final class CrawlerConfiguration {
    * A {@link List} of regular expression {@link Pattern}s that determine which URLs, if any, the
    * web crawler should not follow.
    */
+
   public List<Pattern> getIgnoredUrls() {
     return ignoredUrls;
   }
@@ -67,6 +73,7 @@ public final class CrawlerConfiguration {
    * A {@link List} of regular expression {@link Pattern}s that determine which words, if any, the
    * web crawler should not be counted toward the popular word count returned from the crawl.
    */
+
   public List<Pattern> getIgnoredWords() {
     return ignoredWords;
   }
@@ -79,6 +86,7 @@ public final class CrawlerConfiguration {
    * {@link #getImplementationOverride()} explicitly specifies otherwise). If set to a value less
    * than 1, the crawler will default to using the number of available CPU cores on the system.
    */
+
   public int getParallelism() {
     return parallelism;
   }
@@ -93,6 +101,7 @@ public final class CrawlerConfiguration {
    * <p>If unset or empty, the value of {@link #getParallelism()} setting is used to determine which
    * crawler implementation to use.
    */
+
   public String getImplementationOverride() {
     return implementationOverride;
   }
@@ -120,6 +129,7 @@ public final class CrawlerConfiguration {
    * <p>In this example, the crawler will visit at most A, B, C, and D. The crawler may visit
    * <i>fewer</i> pages if it runs out of time before it can finish. See {@link #getTimeout()}.
    */
+
   public int getMaxDepth() {
     return maxDepth;
   }
@@ -132,6 +142,7 @@ public final class CrawlerConfiguration {
    * finish processing any HTML it has already downloaded, but it will not download any more pages
    * or follow any more links.
    */
+
   public Duration getTimeout() {
     return timeout;
   }
@@ -141,6 +152,7 @@ public final class CrawlerConfiguration {
    *
    * <p>See {@link com.udacity.webcrawler.json.CrawlResult#getWordCounts()} for more information.
    */
+
   public int getPopularWordCount() {
     return popularWordCount;
   }
@@ -153,6 +165,7 @@ public final class CrawlerConfiguration {
    *
    * <p>If the path is empty, the data will be written to standard output.
    */
+
   public String getProfileOutputPath() {
     return profileOutputPath;
   }
@@ -166,6 +179,7 @@ public final class CrawlerConfiguration {
    *
    * <p>See {@link com.udacity.webcrawler.json.CrawlResult}.
    */
+
   public String getResultPath() {
     return resultPath;
   }
@@ -190,6 +204,7 @@ public final class CrawlerConfiguration {
      *
      * <p>Does nothing if the given page has already been added. See {@link #getStartPages()}.
      */
+    @JsonProperty("startPages")
     public Builder addStartPages(String... startPages) {
       for (String startPage : startPages) {
         this.startPages.add(Objects.requireNonNull(startPage));
@@ -204,6 +219,7 @@ public final class CrawlerConfiguration {
      *
      * @param patterns one or more regular expressions that define a valid {@link Pattern}.
      */
+    @JsonProperty("ignoredUrls")
     public Builder addIgnoredUrls(String... patterns) {
       for (String pattern : patterns) {
         ignoredUrls.add(Objects.requireNonNull(pattern));
@@ -222,6 +238,7 @@ public final class CrawlerConfiguration {
      *
      * @param patterns one or more regular expressions that define a valid {@link Pattern}.
      */
+    @JsonProperty("ignoredWords")
     public Builder addIgnoredWords(String... patterns) {
       for (String pattern : patterns) {
         ignoredWords.add(Objects.requireNonNull(pattern));
@@ -234,6 +251,7 @@ public final class CrawlerConfiguration {
      *
      * <p>See {@link #getParallelism()}.
      */
+    @JsonProperty("parallelism")
     public Builder setParallelism(int parallelism) {
       this.parallelism = parallelism;
       return this;
@@ -245,6 +263,7 @@ public final class CrawlerConfiguration {
      *
      * <p>See {@link #getImplementationOverride()}.
      */
+    @JsonProperty("implementationOverride")
     public Builder setImplementationOverride(String implementationOverride) {
       this.implementationOverride = Objects.requireNonNull(implementationOverride);
       return this;
@@ -255,6 +274,7 @@ public final class CrawlerConfiguration {
      *
      * <p>See {@link #getMaxDepth()}.
      */
+    @JsonProperty("maxDepth")
     public Builder setMaxDepth(int maxDepth) {
       this.maxDepth = maxDepth;
       return this;
@@ -265,6 +285,7 @@ public final class CrawlerConfiguration {
      *
      * <p>See {@link #getTimeout()}.
      */
+    @JsonProperty("timeoutSeconds")
     public Builder setTimeoutSeconds(int seconds) {
       this.timeoutSeconds = seconds;
       return this;
@@ -275,6 +296,7 @@ public final class CrawlerConfiguration {
      *
      * <p>See {@link #getPopularWordCount()}.
      */
+    @JsonProperty("popularWordCount")
     public Builder setPopularWordCount(int popularWordCount) {
       this.popularWordCount = popularWordCount;
       return this;
@@ -285,6 +307,7 @@ public final class CrawlerConfiguration {
      *
      * <p>See {@link #getProfileOutputPath()}.
      */
+    @JsonProperty("profileOutputPath")
     public Builder setProfileOutputPath(String profileOutputPath) {
       this.profileOutputPath = Objects.requireNonNull(profileOutputPath);
       return this;
@@ -295,6 +318,7 @@ public final class CrawlerConfiguration {
      *
      * <p>See {@link #getResultPath()}.
      */
+    @JsonProperty("resultPath")
     public Builder setResultPath(String resultPath) {
       this.resultPath = Objects.requireNonNull(resultPath);
       return this;
