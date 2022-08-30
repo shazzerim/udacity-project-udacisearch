@@ -12,7 +12,6 @@ import java.util.Objects;
  * Data class representing the final result of a web crawl.
  */
 
-@JsonSerialize(as = CrawlResult.Builder.class)
 public final class CrawlResult {
 
   private final Map<String, Integer> wordCounts;

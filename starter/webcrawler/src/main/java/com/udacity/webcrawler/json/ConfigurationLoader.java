@@ -36,7 +36,6 @@ public final class ConfigurationLoader {
 
         }
     }
-
     /**
      * Loads crawler configuration from the given reader.
      *
