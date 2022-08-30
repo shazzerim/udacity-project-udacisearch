@@ -47,11 +47,11 @@ public final class ConfigurationLoader {
         Objects.requireNonNull(reader);
 
         CrawlerConfiguration crawlerConfiguration = null;
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
 
         try {
-            crawlerConfiguration = mapper.readValue(reader, CrawlerConfiguration.Builder.class).build();
+            crawlerConfiguration = objectMapper.readValue(reader, CrawlerConfiguration.Builder.class).build();
 
         } catch (IOException ex) {
             ex.printStackTrace();

@@ -40,9 +40,7 @@ public final class CrawlResult {
    * words have the same frequency and length, use alphabetical order to break ties (the word that
    * comes first in the alphabet ranks higher).
    */
-  public Map<String, Integer> getWordCounts() {
-    return wordCounts;
-  }
+  public Map<String, Integer> getWordCounts() {return wordCounts;}
 
   /**
    * Returns the number of distinct URLs the web crawler visited.
@@ -52,9 +50,7 @@ public final class CrawlResult {
    *
    * <p>When computing this value for a given crawl, the same URL is never counted twice.
    */
-  public int getUrlsVisited() {
-    return urlsVisited;
-  }
+  public int getUrlsVisited() {return urlsVisited;}
 
   /**
    * A package-private builder class for constructing web crawl {@link CrawlResult}s.
