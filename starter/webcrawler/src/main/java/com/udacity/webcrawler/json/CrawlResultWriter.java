@@ -62,6 +62,7 @@ public final class CrawlResultWriter {
         objectMapper.disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
         try {
             objectMapper.writeValue(writer, result);
+            System.out.println("\n");
         } catch (IOException ex) {
             ex.printStackTrace();
         }
