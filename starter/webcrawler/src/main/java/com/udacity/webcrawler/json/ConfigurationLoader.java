@@ -30,7 +30,7 @@ public final class ConfigurationLoader {
      * @return the loaded {@link CrawlerConfiguration}.
      */
     public CrawlerConfiguration load() throws IOException {
-        // TODO: Fill in this method. - done
+
         try (BufferedReader reader = Files.newBufferedReader(path)) {
             return read(reader);
 
@@ -45,7 +45,7 @@ public final class ConfigurationLoader {
     public static CrawlerConfiguration read(Reader reader) {
         // This is here to get rid of the unused variable warning.
         Objects.requireNonNull(reader);
-        // TODO: Fill in this method - done
+
         CrawlerConfiguration crawlerConfiguration = null;
         ObjectMapper mapper = new ObjectMapper();
         mapper.disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);

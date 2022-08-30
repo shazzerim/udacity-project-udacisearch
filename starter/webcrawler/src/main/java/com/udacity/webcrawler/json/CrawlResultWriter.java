@@ -35,7 +35,7 @@ public final class CrawlResultWriter {
     public void write(Path path) throws IOException {
         // This is here to get rid of the unused variable warning.
         Objects.requireNonNull(path);
-        // TODO: Fill in this method. - done
+
         ObjectMapper objectMapper = new ObjectMapper();
         try (BufferedWriter bufferedWriter = Files.newBufferedWriter(
                 path,
@@ -55,7 +55,6 @@ public final class CrawlResultWriter {
     public void write(Writer writer) {
         // This is here to get rid of the unused variable warning.
         Objects.requireNonNull(writer);
-        // TODO: Fill in this method. - done
 
         ObjectMapper objectMapper = new ObjectMapper();
         try {
