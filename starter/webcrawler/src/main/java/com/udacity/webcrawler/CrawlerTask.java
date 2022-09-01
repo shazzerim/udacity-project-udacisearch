@@ -3,10 +3,12 @@ package com.udacity.webcrawler;
 import com.udacity.webcrawler.parser.PageParser;
 import com.udacity.webcrawler.parser.PageParserFactory;
 
-import javax.inject.Inject;
 import java.time.Clock;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.RecursiveAction;
 import java.util.regex.Pattern;
 
@@ -19,9 +21,8 @@ public final class CrawlerTask extends RecursiveAction {
     private final String url;
     private final List<Pattern> ignoredUrls;
     private final Clock clock;
+    private final PageParserFactory parserFactory;
 
-    @Inject
-    PageParserFactory pageParserFactory;
 
     private CrawlerTask(Instant deadline,
                         int maxDepth,
@@ -29,7 +30,8 @@ public final class CrawlerTask extends RecursiveAction {
                         Set<String> visitedUrls,
                         String url,
                         List<Pattern> ignoredUrls,
-                        Clock clock) {
+                        Clock clock,
+                        PageParserFactory parserFactory) {
 
         this.deadline = deadline;
         this.maxDepth = maxDepth;
@@ -38,6 +40,7 @@ public final class CrawlerTask extends RecursiveAction {
         this.url = url;
         this.ignoredUrls = ignoredUrls;
         this.clock = clock;
+        this.parserFactory = parserFactory;
     }
 
     public Instant getDeadline() {
@@ -71,7 +74,7 @@ public final class CrawlerTask extends RecursiveAction {
         }
         visitedUrls.add(url);
 
-        PageParser.Result result = pageParserFactory.get(url).parse();
+        PageParser.Result result = parserFactory.get(url).parse();
         for (Map.Entry<String, Integer> e : result.getWordCounts().entrySet()) {
             if (counts.containsKey(e.getKey())) {
                 counts.put(e.getKey(), e.getValue() + counts.get(e.getKey()));
@@ -89,11 +92,11 @@ public final class CrawlerTask extends RecursiveAction {
                 visitedUrls,
                 subUrl,
                 ignoredUrls,
-                clock
+                clock,
+                parserFactory
         )));
 
         invokeAll(subUrlTasks);
-
     }
 
     private boolean isIgnored(String url) {
@@ -105,15 +108,13 @@ public final class CrawlerTask extends RecursiveAction {
     public static final class CrawlerTaskBuilder {
 
         private Instant deadline;
-        @MaxDepth
         private int maxDepth;
         private Map<String, Integer> counts;
         private Set<String> visitedUrls;
-        @IgnoredUrls
         private List<Pattern> ignoredUrls;
-
         private String url;
         private Clock clock;
+        private PageParserFactory parserFactory;
 
         public CrawlerTaskBuilder setDeadline(Instant deadline) {
             this.deadline = deadline;
@@ -140,8 +141,23 @@ public final class CrawlerTask extends RecursiveAction {
             return this;
         }
 
+        public CrawlerTaskBuilder setMaxDepth(int maxDepth) {
+            this.maxDepth = maxDepth;
+            return this;
+        }
+
+        public CrawlerTaskBuilder setIgnoredUrls(List<Pattern> ignoredUrls) {
+            this.ignoredUrls = ignoredUrls;
+            return this;
+        }
+
+        public CrawlerTaskBuilder setParserFactory(PageParserFactory parserFactory) {
+            this.parserFactory = parserFactory;
+            return this;
+        }
+
         public CrawlerTask build() {
-            return new CrawlerTask(deadline, maxDepth, counts, visitedUrls, url, ignoredUrls, clock);
+            return new CrawlerTask(deadline, maxDepth, counts, visitedUrls, url, ignoredUrls, clock, parserFactory);
         }
 
 

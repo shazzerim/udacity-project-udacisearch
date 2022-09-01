@@ -1,6 +1,7 @@
 package com.udacity.webcrawler;
 
 import com.udacity.webcrawler.json.CrawlResult;
+import com.udacity.webcrawler.parser.PageParserFactory;
 
 import javax.inject.Inject;
 import java.time.Clock;
@@ -8,6 +9,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ForkJoinPool;
+import java.util.regex.Pattern;
 
 /**
  * A concrete implementation of {@link WebCrawler} that runs multiple threads on a
@@ -18,18 +20,29 @@ final class ParallelWebCrawler implements WebCrawler {
     private final Duration timeout;
     private final int popularWordCount;
     private final ForkJoinPool pool;
+    private final int maxDepth;
+    private final List<Pattern> ignoredUrls;
 
     @Inject
     ParallelWebCrawler(
             Clock clock,
             @Timeout Duration timeout,
             @PopularWordCount int popularWordCount,
-            @TargetParallelism int threadCount) {
+            @MaxDepth int maxDepth,
+            @TargetParallelism int threadCount,
+            @IgnoredUrls List<Pattern> ignoredUrls
+    ) {
         this.clock = clock;
         this.timeout = timeout;
         this.popularWordCount = popularWordCount;
+        this.maxDepth = maxDepth;
+        this.ignoredUrls = ignoredUrls;
         this.pool = new ForkJoinPool(Math.min(threadCount, getMaxParallelism()));
     }
+
+    @Inject
+    PageParserFactory pageParserFactory;
+
 
     @Override
     public CrawlResult crawl(List<String> startingUrls) {
@@ -45,7 +58,11 @@ final class ParallelWebCrawler implements WebCrawler {
                 .setCounts(counts)
                 .setDeadline(deadline)
                 .setVisitedUrls(visitedUrls)
-                .setClock (clock);
+                .setClock (clock)
+                .setMaxDepth(maxDepth)
+                .setIgnoredUrls(ignoredUrls)
+                .setParserFactory(pageParserFactory);
+
 
        for (String url : startingUrls) {
             pool.invoke(crawlerTaskBuilder.setUrl(url).build());
