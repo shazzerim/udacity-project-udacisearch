@@ -38,6 +38,8 @@ final class ParallelWebCrawler implements WebCrawler {
         Map<String, Integer> counts = Collections.synchronizedMap(new HashMap<>());
         Set<String> visitedUrls = Collections.synchronizedSet(new HashSet<>());
 
+
+
         CrawlerTask.CrawlerTaskBuilder crawlerTaskBuilder = new CrawlerTask
                 .CrawlerTaskBuilder()
                 .setCounts(counts)
@@ -61,8 +63,9 @@ final class ParallelWebCrawler implements WebCrawler {
                 .setUrlsVisited(visitedUrls.size())
                 .build();
 
-    }
 
+
+    }
 
     @Override
     public int getMaxParallelism() {

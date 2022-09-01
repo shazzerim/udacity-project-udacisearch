@@ -64,20 +64,20 @@ public final class CrawlerTask extends RecursiveAction {
         return ignoredUrls;
     }
 
+    private boolean isIgnored(String url) {
+        return ignoredUrls
+                .stream()
+                .anyMatch(pattern -> pattern.matcher(url).matches());
+    }
+
     @Override
     protected void compute() {
-        if (maxDepth == 0 || clock.instant().isAfter(deadline)) {
-            return;
-        }
-        for (Pattern pattern : ignoredUrls) {
-            if (pattern.matcher(url).matches()) {
-                return;
-            }
-        }
-        if (visitedUrls.contains(url)) {
+        if (maxDepth == 0 || clock.instant().isAfter(deadline) || isIgnored(url) || !visitedUrls.add(url)) {
             return;
         }
         visitedUrls.add(url);
+
+
         PageParser.Result result = pageParserFactory.get(url).parse();
         for (Map.Entry<String, Integer> e : result.getWordCounts().entrySet()) {
             if (counts.containsKey(e.getKey())) {
@@ -87,9 +87,9 @@ public final class CrawlerTask extends RecursiveAction {
             }
         }
 
-        List<CrawlerTask> subtasks = new ArrayList<>();
+        List<CrawlerTask> subUrlTasks = new ArrayList<>();
 
-        result.getLinks().forEach(subUrl -> subtasks.add(new CrawlerTask(
+        result.getLinks().forEach(subUrl -> subUrlTasks.add(new CrawlerTask(
                 deadline,
                 maxDepth - 1,
                 counts,
@@ -99,7 +99,7 @@ public final class CrawlerTask extends RecursiveAction {
                 clock
         )));
 
-        invokeAll(subtasks);
+        invokeAll(subUrlTasks);
 
     }
 
