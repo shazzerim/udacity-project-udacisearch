@@ -1,0 +1,82 @@
+Written Questions
+
+Q1. Run the web crawler using the configurations located at src/main/config/written_question_1a.json and
+    src/main/config/written_question_1b.json. The only difference between these configurations is that one always uses
+    the sequential crawler and the other always uses the parallel crawler. Inspect the profile output in
+    profileData.txt.
+
+    If you are using a multi-processor computer, you should notice that SequentialWebCrawler#crawl and
+    ParallelWebCrawler#crawl took about the same amount of time, but PageParserImpl#parse took much longer when run with
+    the ParallelWebCrawler.
+
+    Why did the parser take more time when run with ParallelWebCrawler?
+
+    Answer:
+    * The profiler measured the total time spent parsing web pages, and the ParallelWebCrawler parsed more web pages.
+
+
+Q2. Your manager ran your crawler on her old personal computer, using the configurations from Q1, and she notices that
+    the sequential crawler actually outperforms the parallel crawler. She would like to know why.
+
+    (a) Suggest one reason why the sequential web crawler was able to read more web pages than the parallel crawler.
+        (Hint: Try setting "parallelism" to 1 in the JSON configs to simulate your manager's computer.)
+
+            Answers:
+            * The parallel crawler is slower due to the extra overhead from creating the thread pools and workers.
+            * The parallel crawler is slower due to the extra overhead of synchronized/concurrent data structures.
+            * Your manager's computer only has one processor (CPU core).
+
+    (b) Suggest one scenario in which the parallel web crawler will almost certainly perform better than the sequential
+        crawler. Why will it perform better?
+
+            Answer:
+            *  If the manager would use a system with a multicore-architecture the program would run much faster
+            (assuming ah proper config would be used).
+
+
+Q3. Analyze your method profiler through the lens of Aspect Oriented Programming, by answering the following questions:
+
+    (a) What cross-cutting concern is being addressed by the com.udacity.webcrawler.profiler.Profiler class?
+
+            Answer:
+            * Performance Profiling
+
+    (b) What are the join points of the Profiler in the web crawler program?
+            Answer:
+            Method Invocations
+
+
+Q4. Identify three (3) different design patterns used in this project, and explain which interfaces, classes, and/or
+    libraries use or implement those design patterns.
+
+    For each pattern, name one thing about the pattern that you LIKED, and one thing you DISLIKED. If you did not like
+    anything, you can name two things you disliked.
+
+    Answers:
+    The Builder pattern (creation pattern) was used in the new class CrawlerTask (e.g.) to improve the creation of new tasks
+    with the help of method chaining.
+    The method chaining is the part I especially like about this pattern. It's so much easier to use then a typical
+    constructor, when a lot of constructor parameters are needed.
+    I dislike the amount of boilerplate code that is necessary to write a Builder.
+
+    Also, Dependency Injection was used e.g. for the WebCrawler. Therefore, a WebCrawlerModule was created to define the binding
+    of the needed dependencies and the framework Guice was used in the main method to manage the instantiation (injecting the dependencies
+    for the constructor via @Inject annotation).
+    The needed guice library was configured in the maven pom.xml and imported in the main method (com.google.inject.Guice).
+    The thing I dislike the most is that instantiation errors are not thrown at compile time but at runtime.
+    I like the idea of using this pattern for testing when it comes to fake data but in general this is a complex pattern to wrap my head around.
+
+    The third pattern I want to mention is Structural pattern in form of a (dynamic) Proxy. The Proxy, in this case a Profiler,
+    was used measure the elapsed time for the crawl method of the WebCrawler and the parse method of the PagePager.
+    Therefore these methods had to be called via the InvocationHandler (ProfilingMethodInterceptor) of the Proxy.
+    I like the concept of this particular use case - adding (or limiting) functionality (at runtime, if dynamic) of a method.
+    But I dislike the idea of writing methods within a class but manipulating them in another place within my code.
+    This adds another layer of complexity to the code.
+
+
+
+
+
+
+
+

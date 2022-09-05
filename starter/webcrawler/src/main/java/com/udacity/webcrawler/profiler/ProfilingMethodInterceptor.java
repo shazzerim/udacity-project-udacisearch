@@ -45,6 +45,8 @@ final class ProfilingMethodInterceptor implements InvocationHandler {
             invokedMethod = method.invoke(delegate, args);
         } catch (InvocationTargetException invocationTargetException) {
             throw invocationTargetException.getTargetException();
+        }catch (IllegalAccessException ex) {
+            throw new RuntimeException(ex);
         } finally {
             if (methodIsProfiled) {
                 profilingState.record(delegate.getClass(), method, Duration.between(startTime, clock.instant()));
