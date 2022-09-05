@@ -72,7 +72,7 @@ public final class CrawlerTask extends RecursiveAction {
         if (maxDepth == 0 || clock.instant().isAfter(deadline) || isIgnored(url) || !visitedUrls.add(url)) {
             return;
         }
-        visitedUrls.add(url);
+        // visitedUrls.add(url);
 
         PageParser.Result result = parserFactory.get(url).parse();
         for (Map.Entry<String, Integer> e : result.getWordCounts().entrySet()) {
